@@ -6,33 +6,23 @@
 std::mutex mtx;
 
 int value = 0;
-int stupid_value = 0;
-
-double stupid_count(){
-    auto start = std::chrono::high_resolution_clock::now(); 
-    while(stupid_value < 1000000000){
-        stupid_value++;
-    }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> duration = end - start;
-    return duration.count();
-
-}
 
 void count(){
     while (value < 1000000000){
-        std::unique_lock<std::mutex> lock(mtx);
         value++;
-        lock.unlock();
     }
 }
 
 
 int main(){
+    auto start1 = std::chrono::high_resolution_clock::now(); 
+    count();
+    auto end1 = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration1 = end1 - start1;
+    std::cout << "Without thread: " << duration1.count() << "\n";
 
-    std::cout << "Without thread: " << stupid_count() << "\n";
 
+    value = 0;
     std::thread thread;   
     std::vector<std::thread> threads;   
 
